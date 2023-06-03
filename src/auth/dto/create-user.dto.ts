@@ -9,6 +9,17 @@ export class CreateUserDto {
     @IsString()
     password:string;
 
+    
+    @IsNotEmpty()
+    @IsString()
+    firstName:string;
+
+    @IsOptional()
+    lastName:string;
+
     @IsOptional()
     age:number;
+
+    @IsOptional()
+    favoriteFoods:Array<string>;
 }

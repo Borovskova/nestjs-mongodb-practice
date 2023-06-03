@@ -1,43 +1,48 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserDto } from "./dto/update-user.dto";
 
 import { User } from "./schemas/user.schema";
 import { UsersRepository } from "./users.repository";
-import { CreateUserDto } from "./dto/create-user.dto";
+
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly usersRepository: UsersRepository) {}
+    constructor(private readonly _usersRepository: UsersRepository) {}
 
-    async getUserById(userId: string): Promise<User> {
-        return this.usersRepository.findOne({ userId })
+    public async getUser(userId: string): Promise<User> {
+        const user = await this._usersRepository.findOne({ userId})
+        if(!user){
+          throw new HttpException(
+            'User not found',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user
     }
 
-    async getUsers(): Promise<User[]> {
-        return this.usersRepository.find({});
+    public async getUsers(): Promise<User[]> {
+        return this._usersRepository.find({});
     }
 
-    async createUser(createUserDto: CreateUserDto): Promise<User> {
-        let findUser = await this.usersRepository.findOne({
-            email: createUserDto.email,
-          });
-          if (findUser) {
-            throw new HttpException(
-              'This user already exist.',
-              HttpStatus.BAD_REQUEST,
-            );
-          }
-        return this.usersRepository.create({
-            userId: uuidv4(),
-            email: createUserDto.email,
-            password: createUserDto.password,
-            age: createUserDto.age,
-            favoriteFoods: []
-        })
+    public async updateUser(userId: string, userUpdates: UpdateUserDto): Promise<User> {
+        const user = await this._usersRepository.findOne({ userId: userId})
+        if(!user){
+          throw new HttpException(
+            'User not found',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return this._usersRepository.findOneAndUpdate({ userId }, userUpdates);
     }
 
-    async updateUser(userId: string, userUpdates: UpdateUserDto): Promise<User> {
-        return this.usersRepository.findOneAndUpdate({ userId }, userUpdates);
+    public async deleteUser(userId: string): Promise<any> {
+        const user = await this._usersRepository.findOne({ userId: userId})
+        if(!user){
+          throw new HttpException(
+            'User not found',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return this._usersRepository.deleteOne({ userId });
     }
 }
