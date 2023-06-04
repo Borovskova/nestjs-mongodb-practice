@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export type BookmarkDocument = Bookmark & Document;
-@Schema({ collection: 'bookmarks' })
+@Schema({ collection: 'user-bookmarks' })
 export class Bookmark  {
   @Prop()
   userId: string;
@@ -15,6 +15,9 @@ export class Bookmark  {
 
   @Prop()
   description: string;
+
+  @Prop()
+  link: string;
 }
 
 export const BookmarkSchema = SchemaFactory.createForClass(Bookmark);

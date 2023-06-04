@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 
 import { AuthRepository } from './auth.repository';
-import { User } from 'src/users/schemas/user.schema';
 import { LoginUserDto } from './dto/login-user-dto';
 import { CreateUserDto } from './dto/create-user.dto';
 

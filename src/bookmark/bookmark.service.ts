@@ -40,6 +40,7 @@ export class BookmarkService {
       userId: createBookmarkDto.userId,
       title: createBookmarkDto.title,
       description: createBookmarkDto.description,
+      link: createBookmarkDto.link
     });
   }
 
@@ -48,7 +49,7 @@ export class BookmarkService {
     bookmarkUpdates: UpdateBookmarkDto,
   ): Promise<Bookmark> {
     let findBookmark = await this._bookmarkRepository.findOne({
-      title: bookmarkUpdates.title,
+      bookmarkId: bookmarkId,
     });
     if (!findBookmark) {
       throw new HttpException(

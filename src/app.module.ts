@@ -15,7 +15,7 @@ import { BookmarkModule } from './bookmark/bookmark.module';
       connectionName: 'users',
     }),
     MongooseModule.forRoot('mongodb://localhost/nestdb', {
-      connectionName: 'bookmarks',
+      connectionName: 'user-bookmarks',
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,

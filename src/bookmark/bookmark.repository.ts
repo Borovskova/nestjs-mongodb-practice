@@ -7,7 +7,7 @@ import { Bookmark } from './schemas/bookmark.schema';
 @Injectable()
 export class BookmarkRepository {
   constructor(
-    @InjectModel(Bookmark.name, 'bookmarks')
+    @InjectModel(Bookmark.name, 'user-bookmarks')
     private _bookmarkModel: Model<Bookmark>,
   ) {}
 
