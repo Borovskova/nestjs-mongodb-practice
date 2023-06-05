@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
+import { SocketsModule } from './sockets/sockets.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BookmarkModule } from './bookmark/bookmark.module';
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     BookmarkModule,
+    SocketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
