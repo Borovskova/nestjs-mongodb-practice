@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
-import { Bookmark } from './schemas/bookmark.schema';
+import { Bookmark, BookmarkDocument } from './schemas/bookmark.schema';
 
 @Injectable()
 export class BookmarkRepository {
   constructor(
     @InjectModel(Bookmark.name, 'user-bookmarks')
-    private _bookmarkModel: Model<Bookmark>,
+    private _bookmarkModel: Model<BookmarkDocument>,
   ) {}
 
   public async findOne(
@@ -21,8 +21,8 @@ export class BookmarkRepository {
     return await this._bookmarkModel.find({}).exec();
   }
 
-  public async createBookmark(bookmark: Bookmark): Promise<Bookmark | any> {
-    const newBookmark: any = new this._bookmarkModel(bookmark);
+  public async createBookmark(bookmark: Bookmark): Promise<BookmarkDocument> {
+    const newBookmark: BookmarkDocument = new this._bookmarkModel(bookmark);
     return await newBookmark.save();
   }
 
@@ -39,7 +39,7 @@ export class BookmarkRepository {
 
   public async deleteBookmark(
     bookmarkFilterQuery: FilterQuery<Bookmark>,
-  ): Promise<any> {
+  ): Promise<Object> {
     return await this._bookmarkModel.deleteOne(bookmarkFilterQuery);
   }
 }

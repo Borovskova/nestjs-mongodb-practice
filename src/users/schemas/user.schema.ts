@@ -24,6 +24,12 @@ export class User {
 
   @Prop([String])
   favoriteFoods: string[];
+
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

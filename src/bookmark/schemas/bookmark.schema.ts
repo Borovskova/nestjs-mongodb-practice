@@ -18,6 +18,12 @@ export class Bookmark  {
 
   @Prop()
   link: string;
+
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const BookmarkSchema = SchemaFactory.createForClass(Bookmark);

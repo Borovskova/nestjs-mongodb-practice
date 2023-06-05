@@ -17,25 +17,22 @@ export class UsersService {
             HttpStatus.BAD_REQUEST,
           );
         }
-        return user
+        return await user
     }
 
     public async getUsers(): Promise<User[]> {
-        return this._usersRepository.find({});
+        return await this._usersRepository.find({});
     }
 
     public async updateUser(userId: string, userUpdates: UpdateUserDto): Promise<User> {
-        const user = await this._usersRepository.findOne({ userId: userId})
-        if(!user){
-          throw new HttpException(
-            'User not found',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        return this._usersRepository.findOneAndUpdate({ userId }, userUpdates);
+      const userUpdatesParsed = {
+        updatedAt: new Date(),
+        ...userUpdates,
+      };
+        return await this._usersRepository.findOneAndUpdate({ userId }, userUpdatesParsed);
     }
 
-    public async deleteUser(userId: string): Promise<any> {
+    public async deleteUser(userId: string): Promise<Object> {
         const user = await this._usersRepository.findOne({ userId: userId})
         if(!user){
           throw new HttpException(
@@ -43,6 +40,6 @@ export class UsersService {
             HttpStatus.BAD_REQUEST,
           );
         }
-        return this._usersRepository.deleteOne({ userId });
+        return await this._usersRepository.deleteOne({ userId });
     }
 }

@@ -26,7 +26,7 @@ export class BookmarkController {
     }
 
     @Delete(':bookmarkId')
-    public async deleteBookmark(@Param('bookmarkId') bookmarkId: string): Promise<any> {
+    public async deleteBookmark(@Param('bookmarkId') bookmarkId: string): Promise<Object> {
       return this._bookmarkService.deleteBookmark(bookmarkId);
     }
 }

@@ -26,8 +26,9 @@ export class UsersController {
       return this.usersService.updateUser(userId, updateUserDto);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':userId')
-  public async deleteUser(@Param('userId') userId: string): Promise<any> {
+  public async deleteUser(@Param('userId') userId: string): Promise<Object> {
     return this.usersService.deleteUser(userId);
   }
 }

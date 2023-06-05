@@ -50,7 +50,9 @@ export class AuthService {
             age: createUserDto.age ? createUserDto.age : null,
             firstName: createUserDto.firstName ? createUserDto.firstName : null,
             lastName: createUserDto.lastName ? createUserDto.lastName : null,
-            favoriteFoods: createUserDto.favoriteFoods && createUserDto.favoriteFoods.length ? createUserDto.favoriteFoods : []
+            favoriteFoods: createUserDto.favoriteFoods && createUserDto.favoriteFoods.length ? createUserDto.favoriteFoods : [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
         })
       const payload = { id: user.userId, username: user.firstName, useremail: user.email };
       return {

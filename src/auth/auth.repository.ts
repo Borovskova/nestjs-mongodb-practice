@@ -13,12 +13,12 @@ export class AuthRepository {
   ) {}
 
   public async findOne(userFilterQuery: FilterQuery<User>): Promise<User> {
-    return this._userModel.findOne(userFilterQuery);
+    return await this._userModel.findOne(userFilterQuery);
   }
 
 
-  public async create(user: User): Promise<User | any> {
-    const newUser:any = new this._userModel(user);
-    return newUser.save()
+  public async create(user: User): Promise<UserDocument> {
+    const newUser: UserDocument = new this._userModel(user);
+    return await newUser.save()
   }
 }

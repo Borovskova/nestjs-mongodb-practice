@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,15 +13,22 @@ import { UpdateBookmarkDto } from './dto/update-bookmark-dto';
 
 @Injectable()
 export class BookmarkService {
-  constructor(private readonly _bookmarkRepository: BookmarkRepository) {}
+  constructor(
+    private readonly _bookmarkRepository: BookmarkRepository,
+  ) {}
 
-  public async getUserBookmarks(userId: string): Promise<Bookmark[]> {
-    const allBookmarks = await this._bookmarkRepository.getAllBookmarks();
+  public async getUserBookmarks(
+    userId: string,
+  ): Promise<Bookmark[]> {
+    const allBookmarks =
+      await this._bookmarkRepository.getAllBookmarks();
     let userBookmarks: Array<Bookmark> = [];
 
     if (allBookmarks && allBookmarks.length) {
       allBookmarks.forEach((bookmark) => {
-        bookmark.userId === userId ? userBookmarks.push(bookmark) : null;
+        bookmark.userId === userId
+          ? userBookmarks.push(bookmark)
+          : null;
       });
     }
     return userBookmarks;
@@ -26,53 +37,59 @@ export class BookmarkService {
   public async createBookmark(
     createBookmarkDto: CreateBookmarkDto,
   ): Promise<Bookmark> {
-    let findBookmark = await this._bookmarkRepository.findOne({
-      title: createBookmarkDto.title,
-    });
+    let findBookmark =
+      await this._bookmarkRepository.findOne({
+        title: createBookmarkDto.title,
+      });
     if (findBookmark) {
       throw new HttpException(
         'User already have bookmark with rhis title',
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this._bookmarkRepository.createBookmark({
-      bookmarkId: uuidv4(),
-      userId: createBookmarkDto.userId,
-      title: createBookmarkDto.title,
-      description: createBookmarkDto.description,
-      link: createBookmarkDto.link
-    });
+    return this._bookmarkRepository.createBookmark(
+      {
+        bookmarkId: uuidv4(),
+        userId: createBookmarkDto.userId,
+        title: createBookmarkDto.title,
+        description:
+          createBookmarkDto.description,
+        link: createBookmarkDto.link,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    );
   }
 
   public async updateBookmark(
     bookmarkId: string,
     bookmarkUpdates: UpdateBookmarkDto,
   ): Promise<Bookmark> {
-    let findBookmark = await this._bookmarkRepository.findOne({
-      bookmarkId: bookmarkId,
-    });
-    if (!findBookmark) {
-      throw new HttpException(
-        'Bookmark does not exist',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    const bookmarkUpdatesParsed = {
+      updatedAt: new Date(),
+      ...bookmarkUpdates,
+    };
     return await this._bookmarkRepository.updateBookmark(
       { bookmarkId },
-      bookmarkUpdates,
+      bookmarkUpdatesParsed,
     );
   }
 
-  public async deleteBookmark(bookmarkId: string): Promise<any> {
-    let findBookmark = await this._bookmarkRepository.findOne({
-      bookmarkId: bookmarkId,
-    });
+  public async deleteBookmark(
+    bookmarkId: string,
+  ): Promise<Object> {
+    let findBookmark =
+      await this._bookmarkRepository.findOne({
+        bookmarkId: bookmarkId,
+      });
     if (!findBookmark) {
       throw new HttpException(
         'Bookmark does not exist',
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await this._bookmarkRepository.deleteBookmark({ bookmarkId });
+    return await this._bookmarkRepository.deleteBookmark(
+      { bookmarkId },
+    );
   }
 }
