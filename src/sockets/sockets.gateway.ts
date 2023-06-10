@@ -1,41 +1,65 @@
-import {
-  ConnectedSocket,
-  MessageBody,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
-import WebSocket from 'ws';
+// import {
+//   ConnectedSocket,
+//   MessageBody,
+//   SubscribeMessage,
+//   WebSocketGateway,
+//   WebSocketServer,
+// } from '@nestjs/websockets';
+// import { Server } from 'http';
+// import WebSocket from 'ws';
 
-@WebSocketGateway()
+// @WebSocketGateway()
+// export class SocketsGateway {
+//   @WebSocketServer()
+//   clients = new Map<string, WebSocket>();
+//   server: Server;
+
+//   @SubscribeMessage('message')
+//   handleMessage(
+//     @MessageBody() data,
+//     @ConnectedSocket() client: WebSocket,
+//   ): string | any {
+//     console.log(data, client, 'jjjjjj');
+//     return 'Hello world!';
+//   }
+
+//   @SubscribeMessage('events')
+//   onEvent(@MessageBody() data: unknown): any {
+//     console.log(data, 'jjjjjj');
+//     return 'Hello world';
+//   }
+// }
+
+import { WebSocketServer } from 'ws';
+
 export class SocketsGateway {
-  @WebSocketServer()
-  clients = new Map<string, WebSocket>();
+ public wss = new WebSocketServer({ port: 8080 });
 
-  // handleConnection(client: WebSocket) {
-  //   this.clients.set(client.id, client);
-  // }
+ constructor(){
+  this.wss.on('connection', (ws) =>{
+    ws.on('error', console.error);
 
-  // handleDisconnect(client: WebSocket) {
-  //   this.clients.delete(client.id);
-  // }
+    ws.on('message', (data) => {
+      ws.send(this.wssOnMessageHandler(JSON.parse(data)));
+    });
 
-  @SubscribeMessage('message')
-  handleMessage(
-    @ConnectedSocket() client: WebSocket,
-  ): string | any {
-    // client.join('rating');
-    console.log(client);
+    ws.send('Connected!');
+  });
+ }
 
-    return 'Hello world!';
+ public wssOnMessageHandler(data:any):string | any{
+  switch(data[0]){
+    case "events":{
+      return "User successfully founded!"
+    }
+    case "rating":{
+      return [
+        "success",
+        {
+          "id":1
+        }
+      ]
+    }
   }
-
-  @SubscribeMessage('events')
-  onEvent(@MessageBody() data: unknown): any {
-    const event = 'events';
-    const response = [1, 2, 3];
-    console.log(data);
-
-    return 'Hello world';
-  }
+ }
 }
