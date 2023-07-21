@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { FilterQuery, Model } from 'mongoose';
 
-import { User, UserDocument } from './schemas/user.schema';
+import { User } from './schemas/user.schema';
 
 @Injectable()
 export class UsersRepository {
   constructor(
-    @InjectModel(User.name, 'users') private _userModel: Model<UserDocument>,
+    @InjectModel(User.name) private _userModel: Model<User>,
   ) {}
 
   public async findOne(userFilterQuery: FilterQuery<User>): Promise<User> {

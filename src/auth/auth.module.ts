@@ -12,8 +12,7 @@ import { jwtConstants } from './constants/jwt.secret';
 @Module({
   imports: [
     MongooseModule.forFeature(
-      [{ name: User.name, schema: UserSchema }],
-      'users',
+      [{ name: User.name, schema: UserSchema }]
     ),
     JwtModule.register({
       global: true,

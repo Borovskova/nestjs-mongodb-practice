@@ -18,7 +18,10 @@ export class CreateUserDto {
   @IsString()
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+    default: 'Guest'
+  })
   @IsNotEmpty()
   @IsString()
   firstName: string;

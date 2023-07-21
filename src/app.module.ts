@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+
+import * as Joi from '@hapi/joi';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,16 +12,34 @@ import { BookmarkModule } from './bookmark/bookmark.module';
 import { SocketsModule } from './sockets/sockets.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
+
 @Module({
   imports: [
     UsersModule,
-    MongooseModule.forRoot('mongodb://localhost/nestdb', {
-      connectionName: 'users',
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        MONGO_USERNAME: Joi.string().required(),
+        MONGO_PASSWORD: Joi.string().required(),
+        MONGO_DATABASE: Joi.string().required(),
+        MONGO_HOST: Joi.string().required(),
+      }),
     }),
-    MongooseModule.forRoot('mongodb://localhost/nestdb', {
-      connectionName: 'user-bookmarks',
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const username = configService.get('MONGO_USERNAME');
+        const password = configService.get('MONGO_PASSWORD');
+        const database = configService.get('MONGO_DATABASE');
+        const host = configService.get('MONGO_HOST');
+ 
+        return {
+          uri: `mongodb://${username}:${password}@${host}`,
+          dbName: database,
+        };
+      },
+      inject: [ConfigService],
     }),
-    ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     AuthModule,
     BookmarkModule,

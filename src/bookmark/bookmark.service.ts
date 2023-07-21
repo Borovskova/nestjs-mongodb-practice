@@ -8,21 +8,23 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { BookmarkRepository } from './bookmark.repository';
 import { CreateBookmarkDto } from './dto/create-bookmark.dto';
-import { Bookmark } from './schemas/bookmark.schema';
+import { UserBookmark } from './schemas/bookmark.schema';
 import { UpdateBookmarkDto } from './dto/update-bookmark-dto';
+import { UsersService } from 'src/users/user.service';
 
 @Injectable()
 export class BookmarkService {
   constructor(
     private readonly _bookmarkRepository: BookmarkRepository,
+    private _usersService:UsersService
   ) {}
 
   public async getUserBookmarks(
     userId: string,
-  ): Promise<Bookmark[]> {
+  ): Promise<UserBookmark[]> {
     const allBookmarks =
       await this._bookmarkRepository.getAllBookmarks();
-    let userBookmarks: Array<Bookmark> = [];
+    let userBookmarks: Array<UserBookmark> = [];
 
     if (allBookmarks && allBookmarks.length) {
       allBookmarks.forEach((bookmark) => {
@@ -36,7 +38,12 @@ export class BookmarkService {
 
   public async createBookmark(
     createBookmarkDto: CreateBookmarkDto,
-  ): Promise<Bookmark> {
+  ): Promise<UserBookmark> {
+    const user = await this._usersService.getUser(createBookmarkDto.userId)
+    if(!user){
+      return
+    }
+
     let findBookmark =
       await this._bookmarkRepository.findOne({
         title: createBookmarkDto.title,
@@ -47,6 +54,7 @@ export class BookmarkService {
         HttpStatus.BAD_REQUEST,
       );
     }
+ 
     return this._bookmarkRepository.createBookmark(
       {
         bookmarkId: uuidv4(),
@@ -64,7 +72,17 @@ export class BookmarkService {
   public async updateBookmark(
     bookmarkId: string,
     bookmarkUpdates: UpdateBookmarkDto,
-  ): Promise<Bookmark> {
+  ): Promise<UserBookmark> {
+    let findBookmark =
+      await this._bookmarkRepository.findOne({
+        bookmarkId: bookmarkId,
+      });
+    if (!findBookmark) {
+      throw new HttpException(
+        'Bookmark does not exist',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const bookmarkUpdatesParsed = {
       updatedAt: new Date(),
       ...bookmarkUpdates,
