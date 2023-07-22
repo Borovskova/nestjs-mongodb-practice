@@ -10,8 +10,8 @@ import { AuthGuard } from 'src/auth/guards/auth-guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard)
   @Get()
+  @UseGuards(AuthGuard)
   public async getUser(@Request() req): Promise<User> {
     return this.usersService.getUser(req.user.id);
   }
@@ -26,8 +26,8 @@ export class UsersController {
       return this.usersService.updateUser(userId, updateUserDto);
   }
 
-  @UseGuards(AuthGuard)
   @Delete(':userId')
+  @UseGuards(AuthGuard)
   public async deleteUser(@Param('userId') userId: string): Promise<Object> {
     return this.usersService.deleteUser(userId);
   }

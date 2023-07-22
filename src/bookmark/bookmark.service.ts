@@ -16,12 +16,15 @@ import { UsersService } from 'src/users/user.service';
 export class BookmarkService {
   constructor(
     private readonly _bookmarkRepository: BookmarkRepository,
-    private _usersService:UsersService
+    private _usersService:UsersService,
   ) {}
 
   public async getUserBookmarks(
     userId: string,
   ): Promise<UserBookmark[]> {
+    const user = await this._usersService.getUser(userId)
+    if(!user) return
+
     const allBookmarks =
       await this._bookmarkRepository.getAllBookmarks();
     let userBookmarks: Array<UserBookmark> = [];
@@ -39,15 +42,16 @@ export class BookmarkService {
   public async createBookmark(
     createBookmarkDto: CreateBookmarkDto,
   ): Promise<UserBookmark> {
+    
     const user = await this._usersService.getUser(createBookmarkDto.userId)
-    if(!user){
-      return
-    }
+    if(!user) return
 
     let findBookmark =
       await this._bookmarkRepository.findOne({
         title: createBookmarkDto.title,
+        userId: createBookmarkDto.userId
       });
+
     if (findBookmark) {
       throw new HttpException(
         'User already have bookmark with rhis title',
@@ -57,14 +61,11 @@ export class BookmarkService {
  
     return this._bookmarkRepository.createBookmark(
       {
-        bookmarkId: uuidv4(),
         userId: createBookmarkDto.userId,
         title: createBookmarkDto.title,
         description:
           createBookmarkDto.description,
         link: createBookmarkDto.link,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     );
   }
@@ -75,7 +76,7 @@ export class BookmarkService {
   ): Promise<UserBookmark> {
     let findBookmark =
       await this._bookmarkRepository.findOne({
-        bookmarkId: bookmarkId,
+        _id: bookmarkId,
       });
     if (!findBookmark) {
       throw new HttpException(
@@ -84,11 +85,10 @@ export class BookmarkService {
       );
     }
     const bookmarkUpdatesParsed = {
-      updatedAt: new Date(),
       ...bookmarkUpdates,
     };
     return await this._bookmarkRepository.updateBookmark(
-      { bookmarkId },
+      { _id: bookmarkId },
       bookmarkUpdatesParsed,
     );
   }
@@ -96,18 +96,18 @@ export class BookmarkService {
   public async deleteBookmark(
     bookmarkId: string,
   ): Promise<Object> {
-    let findBookmark =
-      await this._bookmarkRepository.findOne({
-        bookmarkId: bookmarkId,
+
+    let deleteBookmark =
+      await this._bookmarkRepository.findOneAndDelete({
+        _id: bookmarkId,
       });
-    if (!findBookmark) {
+    if (!deleteBookmark) {
       throw new HttpException(
         'Bookmark does not exist',
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await this._bookmarkRepository.deleteBookmark(
-      { bookmarkId },
-    );
+  
+    return true
   }
 }

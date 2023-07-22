@@ -5,11 +5,8 @@ import {
 } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class User extends Document {
-  @Prop()
-  userId: string;
-
   @Prop()
   email: string;
 

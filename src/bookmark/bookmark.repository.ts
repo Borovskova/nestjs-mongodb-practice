@@ -37,9 +37,9 @@ export class BookmarkRepository {
     );
   }
 
-  public async deleteBookmark(
+  public async findOneAndDelete(
     bookmarkFilterQuery: FilterQuery<UserBookmark>,
   ): Promise<Object> {
-    return await this._bookmarkModel.deleteOne(bookmarkFilterQuery);
+    return await this._bookmarkModel.findOneAndDelete(bookmarkFilterQuery);
   }
 }

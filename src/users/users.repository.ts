@@ -31,4 +31,9 @@ export class UsersRepository {
   ): Promise<Object> {
     return await this._userModel.deleteOne(userFilterQuery);
   }
+
+  public async create(user: User | any): Promise<User> {
+    const newUser: User = new this._userModel(user);
+    return await newUser.save()
+  }
 }

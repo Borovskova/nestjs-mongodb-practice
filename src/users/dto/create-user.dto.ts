@@ -24,7 +24,7 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsString()
-  firstName: string;
+  firstName = 'Guest';
 
   @ApiProperty({ required: false })
   @IsOptional()
