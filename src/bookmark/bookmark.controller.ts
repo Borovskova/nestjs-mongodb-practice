@@ -8,17 +8,17 @@ import {
   Param,
   Delete,
   HttpStatus,
-  Response,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiResponse } from '@nestjs/swagger';
-
-import jsend from 'jsend';
 
 import { BookmarkService } from './bookmark.service';
 import { UserBookmark } from './schemas/bookmark.schema';
 import { CreateBookmarkDto } from './dto/create-bookmark.dto';
 import { UpdateBookmarkDto } from './dto/update-bookmark-dto';
 import { GetBookmarkDto } from './dto/get-bookmark-dto';
+import { createExcelFileResponse } from 'src/helpers/exel.helper';
 
 @Controller('bookmark')
 export class BookmarkController {
@@ -60,7 +60,7 @@ export class BookmarkController {
     status: HttpStatus.OK,
   })
   public async deleteBookmark(
-    @Response() res: any,
+    @Res() res: Response,
     @Param('bookmarkId') bookmarkId: string,
   ) {
     const deleteBookmark = await this._bookmarkService.deleteBookmark(bookmarkId);
@@ -71,5 +71,22 @@ export class BookmarkController {
       status: 'success',
       message: `Bookmark with ID ${bookmarkId} has been deleted.`,
     });
+  }
+
+  @Get('list-as-exel')
+  @ApiResponse({ status: 200, description: 'Buffer array' })
+  async getBookmarksListAsExel(
+    @Res() res: Response,
+    @Query() query: GetBookmarkDto,
+  ) {
+    const buffer = await this._bookmarkService.getBookmarksListAsExel(
+      query.userId,
+    );
+    
+    const fileName = 'file-1'
+    const response = createExcelFileResponse(fileName, buffer.length);
+    res.set(response);
+
+    res.end(buffer);
   }
 }
