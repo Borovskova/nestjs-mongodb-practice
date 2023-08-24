@@ -1,13 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import {
-  DocumentBuilder,
-  SwaggerModule,
-} from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WsAdapter } from '@nestjs/platform-ws';
 
 import { AppModule } from './app.module';
-
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,13 +11,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: ['http://localhost:4200'],
-    methods: [
-      'GET',
-      'POST',
-      'PATCH',
-      'PUT',
-      'DELETE',
-    ],
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
   });
   app.useGlobalPipes(
@@ -32,19 +22,14 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Mongo education')
-    .setDescription(
-      'The mongo-education API description',
-    )
+    .setDescription('The mongo-education API description')
     .setVersion('1.0')
     .addTag('mongoEducation')
     .build();
 
-  const document = SwaggerModule.createDocument(
-    app,
-    config,
-  );
+  const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/doc', app, document);
-  app.useWebSocketAdapter(new WsAdapter(app))
+  app.useWebSocketAdapter(new WsAdapter(app));
   await app.listen(3000);
 }
 bootstrap();

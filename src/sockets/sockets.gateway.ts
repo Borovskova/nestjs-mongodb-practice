@@ -23,15 +23,12 @@ export class SocketsGateway {
   server: Server;
 
   @SubscribeMessage('events')
-  async onEvent(
-    client: any,
-    data: any,
-  ): Promise<void> {
-    const socketEventInfo: ITDefaultSocketResponse =
-      {
-        event: 'events',
-        data,
-      };
+  async onEvent(client: any, data: any): Promise<void> {
+    const socketEventInfo: ITDefaultSocketResponse = {
+      event: 'events',
+      data,
+    };
+
     await this.cacheManager.set(
       'socketEventInfo',
       socketEventInfo,
@@ -40,23 +37,14 @@ export class SocketsGateway {
     return;
   }
 
-  public async sendMessage(
-    event: string,
-    data: any,
-  ): Promise<void> {
-    this.server.clients.forEach(
-      async (client) => {
-        if (client.readyState === client.OPEN) {
-          client.send(
-            JSON.stringify({ event, data }),
-          );
-        } else {
-          await this.cacheManager.del(
-            'socketEventInfo',
-          );
-          return;
-        }
-      },
-    );
+  public async sendMessage(event: string, data: any): Promise<void> {
+    this.server.clients.forEach(async (client) => {
+      if (client.readyState === client.OPEN) {
+        client.send(JSON.stringify({ event, data }));
+      } else {
+        await this.cacheManager.del('socketEventInfo');
+        return;
+      }
+    });
   }
 }

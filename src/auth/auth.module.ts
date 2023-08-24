@@ -13,7 +13,7 @@ import { UsersModule } from 'src/users/users.module';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '24h' },
     }),
-    UsersModule
+    UsersModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

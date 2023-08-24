@@ -6,7 +6,7 @@ import { UsersModule } from 'src/users/users.module';
 import { SocketTasks } from './socket.tasks';
 
 @Module({
-  imports: [UsersModule,  CacheModule.register()],
-  providers: [SocketsGateway, SocketTasks]
+  imports: [UsersModule, CacheModule.register()],
+  providers: [SocketsGateway, SocketTasks],
 })
 export class SocketsModule {}

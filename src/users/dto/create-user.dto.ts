@@ -20,7 +20,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     required: false,
-    default: 'Guest'
+    default: 'Guest',
   })
   @IsNotEmpty()
   @IsString()

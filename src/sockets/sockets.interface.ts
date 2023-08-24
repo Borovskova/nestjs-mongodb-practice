@@ -1,4 +1,4 @@
 export interface ITDefaultSocketResponse {
-    event:string;
-    data:any;
+  event: string;
+  data: any;
 }

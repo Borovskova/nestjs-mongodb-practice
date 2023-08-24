@@ -1,7 +1,4 @@
-import {
-  CronExpression,
-  Cron,
-} from '@nestjs/schedule';
+import { CronExpression, Cron } from '@nestjs/schedule';
 import { WsException } from '@nestjs/websockets';
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
@@ -23,18 +20,17 @@ export class SocketTasks {
     private readonly _cacheManager: Cache,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_30_SECONDS)
   private async _sendUser(): Promise<void> {
     const socketEventInfo: ITDefaultSocketResponse =
-      await this._cacheManager.get(
-        'socketEventInfo',
-      );
+      await this._cacheManager.get('socketEventInfo');
+
     if (!socketEventInfo) return;
 
-    const user: User =
-      await this._usersRepository.findOne({
-        userId: socketEventInfo.data.userId,
-      });
+    const user: User = await this._usersRepository.findOne({
+      _id: socketEventInfo.data.userId,
+    });
+
     if (!user) {
       throw new WsException({
         status: 'error',
@@ -42,9 +38,6 @@ export class SocketTasks {
       });
     }
 
-    this._socketsGateway.sendMessage(
-      socketEventInfo.event,
-      user,
-    );
+    this._socketsGateway.sendMessage(socketEventInfo.event, user);
   }
 }

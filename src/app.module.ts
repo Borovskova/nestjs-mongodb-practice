@@ -10,7 +10,6 @@ import { BookmarkModule } from './bookmark/bookmark.module';
 import { SocketsModule } from './sockets/sockets.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
-
 @Module({
   imports: [
     UsersModule,
@@ -30,7 +29,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         const password = configService.get('MONGO_PASSWORD');
         const database = configService.get('MONGO_DATABASE');
         const host = configService.get('MONGO_HOST');
- 
+
         return {
           uri: `mongodb://${username}:${password}@${host}`,
           dbName: database,

@@ -22,26 +22,20 @@ import { createExcelFileResponse } from 'src/helpers/exel.helper';
 
 @Controller('bookmark')
 export class BookmarkController {
-  constructor(
-    private _bookmarkService: BookmarkService,
-  ) {}
+  constructor(private _bookmarkService: BookmarkService) {}
 
   @Get('list')
   public async getUserBookmarks(
     @Query() query: GetBookmarkDto,
   ): Promise<UserBookmark[]> {
-    return this._bookmarkService.getUserBookmarks(
-      query.userId,
-    );
+    return this._bookmarkService.getUserBookmarks(query.userId);
   }
 
   @Post('create')
   public async createBookmark(
     @Body() createBookmarkDto: CreateBookmarkDto,
   ): Promise<UserBookmark> {
-    return this._bookmarkService.createBookmark(
-      createBookmarkDto,
-    );
+    return this._bookmarkService.createBookmark(createBookmarkDto);
   }
 
   @Patch(':bookmarkId')
@@ -63,10 +57,12 @@ export class BookmarkController {
     @Res() res: Response,
     @Param('bookmarkId') bookmarkId: string,
   ) {
-    const deleteBookmark = await this._bookmarkService.deleteBookmark(bookmarkId);
+    const deleteBookmark = await this._bookmarkService.deleteBookmark(
+      bookmarkId,
+    );
 
     if (!deleteBookmark) return;
-    
+
     return res.status(HttpStatus.OK).send({
       status: 'success',
       message: `Bookmark with ID ${bookmarkId} has been deleted.`,
@@ -74,19 +70,23 @@ export class BookmarkController {
   }
 
   @Get('list-as-exel')
-  @ApiResponse({ status: 200, description: 'Buffer array' })
-  async getBookmarksListAsExel(
+  @ApiResponse({
+    status: 200,
+    description: 'Buffer array',
+  })
+  async getUserBookmarksListAsExel(
     @Res() res: Response,
     @Query() query: GetBookmarkDto,
   ) {
-    const buffer = await this._bookmarkService.getBookmarksListAsExel(
-      query.userId,
-    );
-    
-    const fileName = 'file-1'
+    const bufferAndUserData =
+      await this._bookmarkService.getUserBookmarksListAsExel(
+        query.userId,
+      );
+    const { buffer, user } = bufferAndUserData;
+
+    const fileName = `${user.firstName}_${user.lastName}_bookmarks_list`;
     const response = createExcelFileResponse(fileName, buffer.length);
     res.set(response);
-
-    res.end(buffer);
+    res.send(buffer);
   }
 }

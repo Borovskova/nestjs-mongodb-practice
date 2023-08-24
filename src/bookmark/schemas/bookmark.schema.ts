@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class UserBookmark extends Document  {
+export class UserBookmark extends Document {
   @Prop()
   userId: string;
 
@@ -22,4 +22,5 @@ export class UserBookmark extends Document  {
   updatedAt: Date;
 }
 
-export const BookmarkSchema = SchemaFactory.createForClass(UserBookmark);
+export const BookmarkSchema =
+  SchemaFactory.createForClass(UserBookmark);

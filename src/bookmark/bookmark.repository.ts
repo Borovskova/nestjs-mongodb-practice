@@ -21,8 +21,18 @@ export class BookmarkRepository {
     return await this._bookmarkModel.find({}).exec();
   }
 
-  public async createBookmark(bookmark: UserBookmark | any): Promise<UserBookmark> {
-    const newBookmark: UserBookmark = new this._bookmarkModel(bookmark);
+  public async getUserBookmarksList(
+    userId: string,
+  ): Promise<UserBookmark[]> {
+    return await this._bookmarkModel.find({ userId });
+  }
+
+  public async createBookmark(
+    bookmark: UserBookmark | any,
+  ): Promise<UserBookmark> {
+    const newBookmark: UserBookmark = new this._bookmarkModel(
+      bookmark,
+    );
     return await newBookmark.save();
   }
 
@@ -40,6 +50,8 @@ export class BookmarkRepository {
   public async findOneAndDelete(
     bookmarkFilterQuery: FilterQuery<UserBookmark>,
   ): Promise<Object> {
-    return await this._bookmarkModel.findOneAndDelete(bookmarkFilterQuery);
+    return await this._bookmarkModel.findOneAndDelete(
+      bookmarkFilterQuery,
+    );
   }
 }

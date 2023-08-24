@@ -11,26 +11,19 @@ import { Types } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly _usersRepository: UsersRepository,
-  ) {}
+  constructor(private readonly _usersRepository: UsersRepository) {}
 
-  public async getUser(
-    userId: string,
-  ): Promise<User> {
+  public async getUser(userId: string): Promise<User> {
     if (!Types.ObjectId.isValid(userId))
       throw new HttpException(
         'Invalid userId',
         HttpStatus.BAD_REQUEST,
       );
 
-    const user =
-      await this._usersRepository.findOne({
-        _id: userId,
-      });
+    const user = await this._usersRepository.findOne({
+      _id: userId,
+    });
     if (!user) {
-      console.log(user);
-      
       throw new HttpException(
         'User not found',
         HttpStatus.BAD_REQUEST,
@@ -50,19 +43,17 @@ export class UsersService {
     const userUpdatesParsed = {
       ...userUpdates,
     };
+
     return await this._usersRepository.findOneAndUpdate(
       { _id: userId },
       userUpdatesParsed,
     );
   }
 
-  public async deleteUser(
-    userId: string,
-  ): Promise<Object> {
-    const user =
-      await this._usersRepository.findOne({
-        _id: userId,
-      });
+  public async deleteUser(userId: string): Promise<Object> {
+    const user = await this._usersRepository.findOne({
+      _id: userId,
+    });
     if (!user) {
       throw new HttpException(
         'User not found',

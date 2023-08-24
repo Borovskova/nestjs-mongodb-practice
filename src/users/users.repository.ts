@@ -11,11 +11,15 @@ export class UsersRepository {
     @InjectModel(User.name) private _userModel: Model<User>,
   ) {}
 
-  public async findOne(userFilterQuery: FilterQuery<User>): Promise<User> {
+  public async findOne(
+    userFilterQuery: FilterQuery<User>,
+  ): Promise<User> {
     return await this._userModel.findOne(userFilterQuery);
   }
 
-  public async find(userFilterQuery: FilterQuery<User>): Promise<User[]> {
+  public async find(
+    userFilterQuery: FilterQuery<User>,
+  ): Promise<User[]> {
     return await this._userModel.find(userFilterQuery);
   }
 
@@ -23,17 +27,21 @@ export class UsersRepository {
     userFilterQuery: FilterQuery<User>,
     user: Partial<User>,
   ): Promise<User> {
-    return await this._userModel.findOneAndUpdate(userFilterQuery, user, { new: true });
+    return await this._userModel.findOneAndUpdate(
+      userFilterQuery,
+      user,
+      { new: true },
+    );
   }
 
   public async deleteOne(
-    userFilterQuery: FilterQuery<User>
+    userFilterQuery: FilterQuery<User>,
   ): Promise<Object> {
     return await this._userModel.deleteOne(userFilterQuery);
   }
 
   public async create(user: User | any): Promise<User> {
     const newUser: User = new this._userModel(user);
-    return await newUser.save()
+    return await newUser.save();
   }
 }
