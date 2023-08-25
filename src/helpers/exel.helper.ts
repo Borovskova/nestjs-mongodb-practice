@@ -25,37 +25,29 @@ export const generateExcel = async (
   const worksheet = workbook.addWorksheet('Sheet 1');
   const headers: Array<string> = [];
 
-  for (const key in data[0]) {
-    if (
-      key.indexOf('$') === -1 &&
-      (typeof data[0][key] === 'string' ||
-        key.indexOf('tedAt') !== -1)
-    )
-      headers.push(key);
-  }
+  for (const key in data[0])  headers.push(key)
 
   // Add headers
   worksheet.addRow(headers);
 
   //set column width
-  worksheet.columns.forEach((column) => (column.width = 35));
+  for (const column of  worksheet.columns) column.width = 35
 
   // Add data rows
-  data.forEach((item) => {
+  for (const item of data){
     const row = [];
     headers.forEach((header) => row.push(item[header]));
     worksheet.addRow(row);
-  });
+  }
 
   // Save the workbook to a buffer
-  const buffer = await workbook.xlsx.writeBuffer();
 
-  return buffer;
+  return await workbook.xlsx.writeBuffer();
 };
 
-export const readExcel = async (
+export const readExcel =  (
   fileBuffer: Buffer,
-): Promise<any[]> => {
+):any => {
   const workbook = XLSX.read(fileBuffer, {
     type: 'buffer',
   });

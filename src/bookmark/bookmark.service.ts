@@ -20,12 +20,13 @@ export class BookmarkService {
 
   public async getUserBookmarks(
     userId: string,
+    objectOnly:boolean = false
   ): Promise<UserBookmark[]> {
     const user = await this._usersService.getUser(userId);
     if (!user) return;
 
     const userBookmarks =
-      await this._bookmarkRepository.getUserBookmarksList(userId);
+      await this._bookmarkRepository.getUserBookmarksList(userId, objectOnly);
     return userBookmarks;
   }
 
@@ -99,7 +100,7 @@ export class BookmarkService {
   ): Promise<any> {
     const user = await this._usersService.getUser(userId);
     if (!user) return;
-    const userBookmarksList = await this.getUserBookmarks(userId);
+    const userBookmarksList = await this.getUserBookmarks(userId, true);
     const buffer = await generateExcel(userBookmarksList);
 
     return {

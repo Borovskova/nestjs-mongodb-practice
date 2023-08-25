@@ -8,7 +8,10 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from './dto/login-user-dto';
 import { UsersRepository } from 'src/users/users.repository';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { User } from 'src/users/schemas/user.schema';
+import { compareHash, getHash } from './constants/bcrypt';
 
+export const PasswordSaltLength = 4;
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,20 +32,15 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (loginUserDto.password !== user.password) {
-      throw new HttpException(
-        'Wrong password',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const payload = {
-      id: user._id,
-      username: user.firstName,
-      useremail: user.email,
-    };
-    return {
-      token: await this._jwtService.signAsync(payload),
-    };
+
+    if (
+      await compareHash(
+        loginUserDto.password,
+        user.password as string,
+      )
+    )
+      return await this._signToken(user);
+    throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
   }
 
   public async signup(
@@ -59,7 +57,10 @@ export class AuthService {
     }
     const user = await this._usersRepository.create({
       email: createUserDto.email,
-      password: createUserDto.password,
+      password: await getHash(
+        createUserDto.password,
+        PasswordSaltLength,
+      ),
       age: createUserDto.age ? createUserDto.age : null,
       firstName: createUserDto.firstName
         ? createUserDto.firstName
@@ -73,6 +74,11 @@ export class AuthService {
           ? createUserDto.favoriteFoods
           : [],
     });
+
+    return await this._signToken(user);
+  }
+
+  private async _signToken(user: User): Promise<{ token: string }> {
     const payload = {
       id: user._id,
       username: user.firstName,

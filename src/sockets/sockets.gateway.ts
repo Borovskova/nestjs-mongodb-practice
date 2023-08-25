@@ -11,6 +11,7 @@ import { Server } from 'ws';
 import { Cache } from 'cache-manager';
 
 import { ITDefaultSocketResponse } from './sockets.interface';
+import { currentSocketEventInfo } from 'src/auth/constants/socket.event';
 
 @WebSocketGateway(8080)
 export class SocketsGateway {
@@ -30,7 +31,7 @@ export class SocketsGateway {
     };
 
     await this.cacheManager.set(
-      'socketEventInfo',
+      currentSocketEventInfo,
       socketEventInfo,
       100000,
     );
@@ -42,7 +43,7 @@ export class SocketsGateway {
       if (client.readyState === client.OPEN) {
         client.send(JSON.stringify({ event, data }));
       } else {
-        await this.cacheManager.del('socketEventInfo');
+        this.cacheManager.del(currentSocketEventInfo);
         return;
       }
     });

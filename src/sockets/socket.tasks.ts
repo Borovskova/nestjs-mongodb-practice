@@ -10,6 +10,7 @@ import { SocketsGateway } from './sockets.gateway';
 import { User } from 'src/users/schemas/user.schema';
 import { UsersRepository } from 'src/users/users.repository';
 import { ITDefaultSocketResponse } from './sockets.interface';
+import { currentSocketEventInfo } from 'src/auth/constants/socket.event';
 
 @Injectable()
 export class SocketTasks {
@@ -23,7 +24,7 @@ export class SocketTasks {
   @Cron(CronExpression.EVERY_30_SECONDS)
   private async _sendUser(): Promise<void> {
     const socketEventInfo: ITDefaultSocketResponse =
-      await this._cacheManager.get('socketEventInfo');
+      await this._cacheManager.get(currentSocketEventInfo);
 
     if (!socketEventInfo) return;
 
