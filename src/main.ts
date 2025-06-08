@@ -10,7 +10,11 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: ['http://localhost:4200', 'https://table-test-nine.vercel.app'],
+    origin: [
+      'http://localhost:4200',
+      'http://localhost:3002',
+      'https://table-test-nine.vercel.app',
+    ],
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
   });
@@ -30,6 +34,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/doc', app, document);
   app.useWebSocketAdapter(new WsAdapter(app));
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();

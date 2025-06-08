@@ -29,6 +29,13 @@ export class UsersController {
     return this.usersService.getUsers();
   }
 
+  @Get(':userId')
+  public async getUserById(
+    @Param('userId') userId: string,
+  ): Promise<User> {
+    return this.usersService.getUser(userId);
+  }
+
   @Patch(':userId')
   @UseGuards(AuthGuard)
   public async updateUser(

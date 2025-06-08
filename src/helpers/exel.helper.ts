@@ -25,16 +25,16 @@ export const generateExcel = async (
   const worksheet = workbook.addWorksheet('Sheet 1');
   const headers: Array<string> = [];
 
-  for (const key in data[0])  headers.push(key)
+  for (const key in data[0]) headers.push(key);
 
   // Add headers
   worksheet.addRow(headers);
 
   //set column width
-  for (const column of  worksheet.columns) column.width = 35
+  for (const column of worksheet.columns) column.width = 35;
 
   // Add data rows
-  for (const item of data){
+  for (const item of data) {
     const row = [];
     headers.forEach((header) => row.push(item[header]));
     worksheet.addRow(row);
@@ -45,9 +45,7 @@ export const generateExcel = async (
   return await workbook.xlsx.writeBuffer();
 };
 
-export const readExcel =  (
-  fileBuffer: Buffer,
-):any => {
+export const readExcel = (fileBuffer: Buffer): any => {
   const workbook = XLSX.read(fileBuffer, {
     type: 'buffer',
   });

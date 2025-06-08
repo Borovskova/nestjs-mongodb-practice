@@ -23,9 +23,11 @@ export class BookmarkRepository {
 
   public async getUserBookmarksList(
     userId: string,
-    objectOnly:boolean = false
+    objectOnly: boolean = false,
   ): Promise<UserBookmark[]> {
-    return await objectOnly ? this._bookmarkModel.find({ userId }).lean() : this._bookmarkModel.find({ userId });
+    return (await objectOnly)
+      ? this._bookmarkModel.find({ userId }).lean()
+      : this._bookmarkModel.find({ userId });
   }
 
   public async createBookmark(
